@@ -1,5 +1,5 @@
 require 'readline'
-require_relative "my_sqlite_request"
+require_relative "my_request"
 require 'csv'
 
 # p commands["SELECT"][args]
@@ -49,7 +49,7 @@ class MyCli
 
     select_columns = CSV.parse(args[0..from_index-1].delete(" "))
     db_name = args[from_index+4..where_index-1].strip
-
+    puts select_columns
     request.select(select_columns[0])
     request.from(db_name)
 
@@ -132,14 +132,10 @@ class MyCli
       puts "key:#{key} value:#{value}"
       request.where(key,value)
     end
-
     request.run
   end
 
-
-
   def main
-
     while input_buf = self.run_buf
       if input_buf == "exit"
         break
@@ -151,17 +147,11 @@ class MyCli
       main_type = buf[0..6]
       @args = buf[7..-1]
 
-      puts "#{main_type}and#{@args}"
       @main_statements[main_type][@args]
       end
-
     end
   end
-
 end
-    
-
-
 
 def _run
   myCli  = MyCli.new
@@ -169,10 +159,9 @@ def _run
 end
 
 _run
-
 # SELECT Player,collage, born FROM nba_players.csv WHERE birth_city=Yorktown;
 # SELECT name,college, birth_date FROM nba_player_data.csv WHERE year_end=1995, weight=240;
 # SELECT * FROM nba_player_data.csv WHERE year_end=1995;
 # INSERT INTO nba_player_data.csv (name,year_start,year_end,position,height,weight,birth_date,college) VALUES (Karl-Anthony Towns,2016,2018,C-F,7-0,244,"November 15, 1995",University of Kentucky);
-# UPDATE nba_player_data.csv SET year_start = 2012, year_end = 2019 WHERE weight=244;
+# UPDATE nba_player_data.csv SET year_start = 2012, year_end = 2019 WHERE weight=240;
 # DELETE FROM nba_player_data.csv WHERE year_end=2019;
